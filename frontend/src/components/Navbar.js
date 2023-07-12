@@ -24,6 +24,7 @@ function Navbar() {
             <Link to="/sales" className='ml-3 mr-3'>Your Sales</Link>
             <Link to="/sell" className='ml-3 mr-3'>Sell</Link>
             <Link to="/cart" className='ml-3 mr-3'>Cart</Link>
+            <Link to="/checkout" className='ml-3 mr-3'>Checkout</Link>
           </div>
         </div>
         <div className='float-right'>

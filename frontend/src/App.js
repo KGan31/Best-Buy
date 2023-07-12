@@ -9,6 +9,7 @@ import Signup from './pages/Signup'
 import Sales from './pages/Sales'
 import Orders from './pages/Orders'
 import Cart from './pages/Cart'
+import Checkout from './pages/Checkout';
 
 function App() {
   const {user} = useAuthContext();
@@ -49,6 +50,10 @@ function App() {
             <Route 
               path="/cart"
               element = {user ? <Cart />: <Navigate to="/login"/>}
+            />
+            <Route 
+              path="/checkout"
+              element = {user ? <Checkout />: <Navigate to="/login"/>}
             />
           </Routes>
         </div>

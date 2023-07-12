@@ -65,7 +65,7 @@ const deleteItem = async(req, res) => {
     const buyer_user_id = req.user._id;
     const {title, description, price, image, user_id: seller_user_id} = item;
     const sold_item = await Sold_Item.create({title, description, price, image, seller_user_id, buyer_user_id})
-    res.status(200).json(item);
+    res.status(200).json({message:'Files deleted successfully'});
 }
 
 // Update Item
