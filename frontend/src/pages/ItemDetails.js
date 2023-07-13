@@ -15,6 +15,7 @@ export default function ItemDetails() {
             try{
                 const response = await fetch(`/api/shop/${id}` , {
                     headers: {
+                        'Content-Type': 'application/json',
                         'Authorization': `Bearer ${user.token}`
                     }
                 });
@@ -22,7 +23,7 @@ export default function ItemDetails() {
                 // if(response.ok){
                 //     dispatch({type: 'GET_ITEM', payload: data})
                 // }
-                console.log(item)
+                console.log(data)
                 //path = "http://localhost:3000/"+items.image;
                 setItem(data)
             }
@@ -33,14 +34,17 @@ export default function ItemDetails() {
         fetchItem();
     }, []);
     const handleClick = () => {
-        const deleteItem = async () => {
+        const addToCart = async () => {
             try {
                 const response = await fetch(`/api/cart/${id}`, {
                     method: 'POST', 
                     headers: {
+                        'Content-Type': 'application/json',
                         'Authorization': `Bearer ${user.token}`
                     }
                 })
+                const msg = await response.json()
+                console.log(msg);
                 if(response.ok){
                     navigate('/');
                 }
@@ -49,7 +53,7 @@ export default function ItemDetails() {
                 console.error('Error Deleting Items')
             }
         } 
-        deleteItem();
+        addToCart();
     }
     const path = "../" + item.image
   return ( 

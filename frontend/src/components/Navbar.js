@@ -9,43 +9,50 @@ function Navbar() {
   const handleClick = () =>{
     logout();
   }
-  return (
-    <nav className='flex bg-gray-300 items-center'>
-      <div className="flex justify-start items-center">
-        <div className='flex'>
-          <div className='text-2xl font-bold pr-5 pl-2'>
-            <Link to = "/">Best Buy</Link>
+return(
+  <nav className="bg-gray-800">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between h-12">
+          <div className="flex">
+            <div className="flex-shrink-0 flex items-center">
+              {/* Logo or Title */}
+              <Link to="/" className="text-white text-lg font-semibold">Best Buy</Link>
+            </div>
+            {user &&
+              <div className="hidden space-x-8  items-center sm:-my-px sm:ml-10 sm:flex">
+                {/* Navbar Links */}
+                <Link to="/orders" className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Orders</Link>
+                <Link to="/sales" className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Sales</Link>
+                <Link to="/sell" className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Sell</Link>
+                <Link to="/cart" className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Cart</Link>
+                <Link to="/checkout" className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Checkout</Link>
+              </div>
+            }
           </div>
-          <div>
-            <input type="text" placeholder='Search' className='items-center mt-1 decoration-none outline-none rounded-md'/>
-          </div>
-          <div className="items-center mt-1">
-            <Link to="/orders" className='ml-3 mr-3'>Your Orders</Link>
-            <Link to="/sales" className='ml-3 mr-3'>Your Sales</Link>
-            <Link to="/sell" className='ml-3 mr-3'>Sell</Link>
-            <Link to="/cart" className='ml-3 mr-3'>Cart</Link>
-            <Link to="/checkout" className='ml-3 mr-3'>Checkout</Link>
-          </div>
-        </div>
-        <div className='float-right'>
-          <div>
+          <div className=" hidden sm:flex sm:items-center sm:ml-6">
             {user && (
               <div>
-                <span className='mr-3'>{user.email}</span>
-                <button onClick={handleClick}>Log out</button>
-              </div> 
+              <span className="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-1 px-4 border border-gray-400 rounded shadow">{user.email}</span>
+              <button onClick={handleClick} className="ml-4 bg-red-500 hover:bg-red-600 text-white font-semibold py-1 px-4 border border-red-600 rounded shadow">Log out</button>
+              </div>
             )}
             {!user && (
               <div>
-                <Link to="/login" className='mr-3'>Login</Link>
-                <Link to="/signup">Sign up</Link>
-            </div>
+                {/* Login and Logout Buttons */}
+                <Link to = "/login" className="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow">
+                  Login
+                </Link>
+                <Link to = "/signup" className="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow">
+                  Signup
+                </Link>
+              </div>
             )}
           </div>
         </div>
       </div>
-      
     </nav>
 )}
+
+
 
 export default Navbar

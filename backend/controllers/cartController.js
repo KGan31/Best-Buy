@@ -21,8 +21,13 @@ const getItems = async(req, res) => {
 const createItem = async(req, res) => {
     const user_id = req.user._id;
     const {id: item_id} = req.params;
+    const alreadyInCart = await Cart.findOne({user_id, item_id})
+    console.log(alreadyInCart)
+    if(alreadyInCart){
+        return res.status(200).json({message: "Item is already added to cart"});
+    }
     const cartItem = await Cart.create({user_id, item_id});
-    res.status(200).json(cartItem);
+    return res.status(200).json(cartItem);
 }
 
 const deleteItem = async(req, res) => {
@@ -34,7 +39,7 @@ const deleteItem = async(req, res) => {
     if(!cartItem){
         return res.status(400).json({error: "No such Item"})
     }
-    res.status(200).json(cartItem);
+    return res.status(200).json(cartItem);
 }
 
 const checkoutItems = async(req, res) => {
@@ -59,7 +64,7 @@ const checkoutItems = async(req, res) => {
             return res.status(400).json({error: "Failed to delete Item"})
         }
     })
-    res.status(200).json({message: 'Items deleted successfully'});
+    return res.status(200).json({message: 'Items deleted successfully'});
 }
 
 module.exports = {
