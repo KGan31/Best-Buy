@@ -1,9 +1,33 @@
 import React from 'react'
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import useAuthContext from '../hooks/useAuthContext';
 
+export default function ItemList({item , from}) {
+  const {user} = useAuthContext();
+  const navigate = useNavigate()
+  console.log(from);
+  function handleClick(id) {
+    const deleteItem = async () => {
+      try{
+        const response = await fetch('/api/shop/'+ id ,{
+          method :'DELETE',
+          headers: {
+            'Authorization': `Bearer ${user.token}`
+          }
+        });
+        const data = await response.json();
+        console.log(data);
+        if(response.ok){
+          navigate('/sales');
+        }
+      }
+      catch(error){
+        console.error('Error deleting Item', error)
+      }
 
-export default function ItemList({item}) {
-
+    }
+    deleteItem()
+  }
   return (
     <div>
         <div className='bg-white shadow-md rounded-lg overflow-hidden hover:shadow-lg'>
@@ -13,8 +37,10 @@ export default function ItemList({item}) {
                     <h3 className="text-lg font-semibold mb-2">{item.title}</h3>
                     <p className="text-gray-700 mb-4">{item.description}</p>
                     <p className="text-green-500 font-semibold">Rs.{item.price}</p>
+                    {from==="sold" && <p className="text-red-500 mt-1">Sold</p>}
                 </div>
             </Link>
+            {from==="forSale" && <button onClick={() => handleClick(item._id)} className="mt-8 bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded">Remove from Sale</button>}
         </div>
     </div>
   )

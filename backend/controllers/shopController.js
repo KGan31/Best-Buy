@@ -1,7 +1,8 @@
 const Item = require('../models/itemModel')
 const Sold_Item = require('../models/soldItemModel')
+const Cart = require('../models/cartModel')
 const mongoose = require('mongoose')
-const upload = require('../middleware/upload')
+
 // Get All Ttems
 const getItems = async(req, res) => {
     const allItems = await Item.find({}).sort({createdAt: -1})
@@ -59,13 +60,11 @@ const deleteItem = async(req, res) => {
         return res.status(404).json({error: "No such Item"})
     }
     const item = await Item.findOneAndDelete({_id: id}) 
+    const cartItems = await Cart.findOneAndDelete({item_id: id})
     if(!item){
-        return res.status(400).json({error: "No such Item"})
+        return res.status(400).json({error: "Item Is Sold"})
     }
-    const buyer_user_id = req.user._id;
-    const {title, description, price, image, user_id: seller_user_id} = item;
-    const sold_item = await Sold_Item.create({title, description, price, image, seller_user_id, buyer_user_id})
-    res.status(200).json({message:'Files deleted successfully'});
+    res.status(200).json(item);
 }
 
 // Update Item
@@ -90,12 +89,23 @@ const sales = async(req, res) => {
         return res.status(404).json({error: "No such User"})
     }
     const sales = await Item.find({user_id}).sort({createdAt: -1})
-    console.log(sales);
     if(!sales){
         return res.status(400).json({error: "No items are listed by the user"})
     }
     res.status(200).json(sales)
 }
+const sold = async(req, res) => {
+    const seller_user_id = req.user._id;
+    if(!mongoose.Types.ObjectId.isValid(seller_user_id)){
+        return res.status(404).json({error: "No such User"})
+    }
+    const sold = await Sold_Item.find({seller_user_id}).sort({createdAt: -1})
+    if(!sold){
+        return res.status(400).json({error: "No items are listed by the user"})
+    }
+    return res.status(200).json(sold)
+}
+
 
 const orders = async(req, res) => {
     const buyer_user_id = req.user._id;
@@ -103,7 +113,6 @@ const orders = async(req, res) => {
         return res.status(404).json({error: "No such User"})
     }
     const sales = await Sold_Item.find({buyer_user_id}).sort({createdAt: -1})
-    console.log(sales);
     if(!sales){
         return res.status(400).json({error: "No items are listed by the user"})
     }
@@ -117,5 +126,6 @@ module.exports = {
     deleteItem,
     updateItem,
     sales,
-    orders
+    orders,
+    sold
 }

@@ -24,7 +24,6 @@ export default function ItemDetails() {
                 //     dispatch({type: 'GET_ITEM', payload: data})
                 // }
                 console.log(data)
-                //path = "http://localhost:3000/"+items.image;
                 setItem(data)
             }
             catch(error){

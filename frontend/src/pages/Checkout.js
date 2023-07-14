@@ -1,11 +1,13 @@
 import React from 'react';
 import { useEffect, useState } from 'react';
 import useAuthContext from '../hooks/useAuthContext';
+import { useNavigate } from 'react-router-dom';
 
 const Checkout = () => {
     const [ items, setItems ] = useState('')
     const {user} = useAuthContext();
     const [totalAmount, setTotalAmount] = useState();
+    const navigate = useNavigate();
     useEffect(()=>{
         const fetchItems = async () => {
             try {
@@ -33,7 +35,6 @@ const Checkout = () => {
     
     const handleClick = () => {
       const del_ids = items.map(item => item._id)
-      //console.log(del_ids)
       const deleteItem = async () => {
         try {
             const response = await fetch(`/api/cart`, {

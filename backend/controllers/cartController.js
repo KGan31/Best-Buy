@@ -31,11 +31,12 @@ const createItem = async(req, res) => {
 }
 
 const deleteItem = async(req, res) => {
-    const {id} = req.params;
-    if(!mongoose.Types.ObjectId.isValid(id)){
+    const user_id = req.user._id;
+    const {id: item_id} = req.params;
+    if(!mongoose.Types.ObjectId.isValid(item_id)){
         return res.status(404).json({error: "No such Item"})
     }
-    const cartItem = await Cart.findOneAndDelete({_id: id}) 
+    const cartItem = await Cart.findOneAndDelete({user_id, item_id}) 
     if(!cartItem){
         return res.status(400).json({error: "No such Item"})
     }
@@ -44,7 +45,6 @@ const deleteItem = async(req, res) => {
 
 const checkoutItems = async(req, res) => {
     const del_ids = req.body;
-    //console.log(del_ids);
     const buyer_user_id = req.user._id;
     del_ids.forEach(async (id)=>{
         if(!mongoose.Types.ObjectId.isValid(id)){

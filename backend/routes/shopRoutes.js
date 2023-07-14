@@ -8,7 +8,8 @@ const {
     deleteItem,
     updateItem,
     sales,
-    orders
+    orders,
+    sold
 } = require('../controllers/shopController')
 
 const requireAuth = require('../middleware/requireAuth')
@@ -17,8 +18,9 @@ const requireAuth = require('../middleware/requireAuth')
 router.use(requireAuth);
 
 
-//Find sells by the user
+//Find sales by the user
 router.get('/sales', sales);
+router.get('/sold', sold);
 
 // Find orders by the user
 router.get('/orders', orders);

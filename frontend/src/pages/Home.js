@@ -37,7 +37,7 @@ const Home = () => {
         <div className="">
             <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4 pl-6 pt-6'>
                 {items && items.map((item) => (
-                    <ItemList key = {item._id} item = {item} />
+                    <ItemList key = {item._id} item = {item} from = "home" />
                 ))}
             </div>
         </div>
