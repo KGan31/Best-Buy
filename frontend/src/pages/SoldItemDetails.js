@@ -5,7 +5,7 @@ import { useParams , useNavigate} from 'react-router-dom'
 import useAuthContext from '../hooks/useAuthContext';
 //import { useItemsContext } from '../hooks/useItemsContext';
 
-export default function ItemDetails() {
+export default function SoldItemDetails() {
     const {id} = useParams();
     const [item, setItem] = useState('');
     const {user} = useAuthContext();
@@ -13,7 +13,7 @@ export default function ItemDetails() {
     useEffect(()=>{
         const fetchItem = async () => {
             try{
-                const response = await fetch(`/api/shop/${id}` , {
+                const response = await fetch(`/api/shop/sold/${id}` , {
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${user.token}`
@@ -54,7 +54,7 @@ export default function ItemDetails() {
         } 
         addToCart();
     }
-    const path = "../" + item.image
+    const path = "../../" + item.image
   return ( 
     <div>
         <div className="container mx-auto py-8">
@@ -67,11 +67,10 @@ export default function ItemDetails() {
                 <p className="text-gray-600 mb-4">{item.description}</p>
                 <div className="flex items-center mb-4">
                 <span className="text-green-500 font-bold mr-2">Rs.{item.price}</span>
-                <span className="text-sm text-gray-500">(Free shipping)</span>
                 </div>
-                <button onClick={handleClick} className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">
+                {/* <button onClick={handleClick} className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">
                 Add to Cart
-                </button>
+                </button> */}
             </div>
             </div>
         </div>

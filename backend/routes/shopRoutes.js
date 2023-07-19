@@ -9,7 +9,8 @@ const {
     updateItem,
     sales,
     orders,
-    sold
+    sold,
+    getSoldItem
 } = require('../controllers/shopController')
 
 const requireAuth = require('../middleware/requireAuth')
@@ -40,5 +41,7 @@ router.delete('/:id', deleteItem);
 // Update Item
 router.patch('/:id', updateItem);
 
+// Get Details of Sold Item
+router.get('/sold/:id', getSoldItem);
 
 module.exports = router;

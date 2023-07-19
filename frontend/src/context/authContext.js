@@ -1,5 +1,5 @@
 import { useReducer, createContext, useEffect } from "react";
-
+import jwt_decode from "jwt-decode"
 export const AuthContext = createContext();
 
 export const authReducer = (state, action) => {
@@ -21,9 +21,21 @@ export const AuthContextProvider = ({children}) =>{
     useEffect(()=> {
         const user = JSON.parse(localStorage.getItem('user'))
         if(user){
-            dispatch({type: 'LOGIN', payload: user})
+            const {token} = user;
+            const {exp} = jwt_decode(token)
+            const expirationTimeInSeconds = exp * 1000
+            const now = new Date()
+            const isValid = expirationTimeInSeconds >= now.getTime()
+            if(isValid){
+                dispatch({type: 'LOGIN', payload: user})
+            }
+            else{
+                localStorage.removeItem('user');
+                dispatch({type: 'LOGOUT'})
+            }
         }
     }, [])
+    console.log('AuthContext State: ', state)
     return(
         <AuthContext.Provider value={{...state, dispatch}}>
             {children}

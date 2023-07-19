@@ -1,5 +1,6 @@
 import {useEffect, useState} from 'react'
 //import { useItemsContext } from '../hooks/useItemsContext';
+import { useNavigate } from 'react-router-dom'
 
 //components
 import ItemList from '../components/ItemList'
@@ -8,7 +9,7 @@ import useAuthContext from '../hooks/useAuthContext'
 const Home = () => {
     const [ items, setItems ] = useState('')
     const {user} = useAuthContext();
-
+    const navigate = useNavigate();
     useEffect(()=>{
         const fetchItems = async () => {
             try {
@@ -17,14 +18,17 @@ const Home = () => {
                         'Authorization': `Bearer ${user.token}`
                     }
                 });
-                const data = await response.json();
-                console.log(data)
-                // if(response.ok){
-                //     dispatch({type: 'SET_ITEMS', payload: data})
-                // }
-                setItems(data)
+                if(response.ok){
+                    const data = await response.json();
+                    console.log(data)
+                    // if(response.ok){
+                    //     dispatch({type: 'SET_ITEMS', payload: data})
+                    // }
+                    setItems(data)
+                }
             }
             catch(error){
+                console.log("In " )
                 console.error('Error finding items: ', error);
             }
         }

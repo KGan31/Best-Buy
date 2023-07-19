@@ -60,7 +60,7 @@ const deleteItem = async(req, res) => {
         return res.status(404).json({error: "No such Item"})
     }
     const item = await Item.findOneAndDelete({_id: id}) 
-    const cartItems = await Cart.findOneAndDelete({item_id: id})
+    const cartItems = await Cart.deleteMany({item_id: id})
     if(!item){
         return res.status(400).json({error: "Item Is Sold"})
     }
@@ -119,6 +119,18 @@ const orders = async(req, res) => {
     res.status(200).json(sales)
 }
 
+const getSoldItem = async(req, res) => {
+    const { id } = req.params
+    if(!mongoose.Types.ObjectId.isValid(id)){
+        return res.status(404).json({error: "No such Item getItem"})
+    }
+    const singleItem = await Sold_Item.findById(id);
+    if(!singleItem){
+        return res.status(404).json({error: "No such Item getItem"})
+    } 
+    res.status(200).json(singleItem)
+}
+
 module.exports = {
     getItem,
     getItems,
@@ -127,5 +139,6 @@ module.exports = {
     updateItem,
     sales,
     orders,
-    sold
+    sold,
+    getSoldItem
 }

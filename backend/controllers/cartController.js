@@ -12,7 +12,7 @@ const getItems = async(req, res) => {
         ids.push(item.item_id)
     ))   
         //console.log(ids)
-    //console.log(allItems);
+    console.log(allItems);
     //console.log(req);
     const cartItems = await Item.find({_id: {$in: ids}})
     res.status(200).json(cartItems);
@@ -50,7 +50,7 @@ const checkoutItems = async(req, res) => {
         if(!mongoose.Types.ObjectId.isValid(id)){
             return res.status(404).json({error: "No such Item"})
         }
-        const cartItem = await Cart.findOneAndDelete({item_id: id}) 
+        const cartItem = await Cart.deleteMany({item_id: id}) 
         if(!cartItem){
             return res.status(400).json({error: "No such Item"})
         }

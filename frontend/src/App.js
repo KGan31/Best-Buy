@@ -10,6 +10,7 @@ import Sales from './pages/Sales'
 import Orders from './pages/Orders'
 import Cart from './pages/Cart'
 import Checkout from './pages/Checkout';
+import SoldItemDetails from './pages/SoldItemDetails'
 
 function App() {
   const {user} = useAuthContext();
@@ -42,6 +43,10 @@ function App() {
             <Route 
               path="/items/:id"
               element = {user ? <ItemDetails />: <Navigate to="/login"/>}
+            />
+            <Route 
+              path="/items/sold/:id"
+              element = {user ? <SoldItemDetails />: <Navigate to="/login"/>}
             />
             <Route 
               path="/orders"
