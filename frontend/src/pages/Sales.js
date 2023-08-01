@@ -10,10 +10,11 @@ const Home = () => {
     const [ itemsSold, setItemsSold ] = useState('')
 
     const {user} = useAuthContext();
-
+    const [isLoading, setIsLoading] = useState(null);
     useEffect(()=>{
         const fetchItemsForSale = async () => {
             try {
+                setIsLoading(true);
                 const response = await fetch('/api/shop/sales', {
                     headers: {
                         'Authorization': `Bearer ${user.token}`
@@ -24,7 +25,10 @@ const Home = () => {
                 // if(response.ok){
                 //     dispatch({type: 'SET_ITEMS', payload: data})
                 // }
-                setItemsForSale(data)
+                if(data.length){
+                    setItemsForSale(data);
+                }
+                setIsLoading(false);
             }
             catch(error){
                 console.error('Error finding items: ', error);
@@ -32,6 +36,7 @@ const Home = () => {
         }
         const fetchItemsSold = async () => {
             try {
+                setIsLoading(true);
                 const response = await fetch('/api/shop/sold', {
                     headers: {
                         'Authorization': `Bearer ${user.token}`
@@ -42,7 +47,10 @@ const Home = () => {
                 // if(response.ok){
                 //     dispatch({type: 'SET_ITEMS', payload: data})
                 // }
-                setItemsSold(data)
+                if(data.length){
+                    setItemsSold(data);
+                }
+                setIsLoading(false);
             }
             catch(error){
                 console.error('Error finding items: ', error);
@@ -56,6 +64,13 @@ const Home = () => {
     
     return(
         <div className="">
+            {isLoading && 
+                <p className='flex justify-center items-center min-h-screen'>Loading...</p>
+            }
+            {!isLoading && !itemsForSale && !itemsSold &&
+                <p>You have not uploaded any items to sell</p>
+            }
+            {!isLoading && 
             <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4 pl-6 pt-6'>
                 {itemsForSale && itemsForSale.map((item) => (
                     <ItemList key = {item._id} item = {item} from="forSale"/>
@@ -63,7 +78,7 @@ const Home = () => {
                 {itemsSold && itemsSold.map((item) => (
                     <ItemList key = {item._id} item = {item} from="sold"/>
                 ))}
-            </div>
+            </div>}
         </div>
     )
 }

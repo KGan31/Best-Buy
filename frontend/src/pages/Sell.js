@@ -11,9 +11,10 @@ function Sell() {
   const [price, setPrice] = useState('');
   const [img, setImg] = useState('');
   const {user} = useAuthContext();
-
+  const [isLoading, setIsLoading] = useState(null);
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
     const item = {name, desc, price};
     const formdata = new FormData();
     formdata.append('title', name);
@@ -36,8 +37,10 @@ function Sell() {
         setPrice('')
         setImg('')
         console.log('New Item added', json)
+
         //dispatch({type: 'CREATE_ITEM', payload: json})
     }
+    setIsLoading(false);
   }
 
   return (
@@ -80,10 +83,12 @@ function Sell() {
                 className='w-full px-3 py-2 border border-gray-300 rounded-md resize-none focus:outline-none focus:border-blue-500" placeholder="Enter the item description'
             />
           </div>
-          
-            <button className='bg-blue-500 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline'>Add Item</button>
+            {!isLoading && <button className='bg-blue-500 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline'>Add Item</button>}
         </div>
       </form>
+      {isLoading && 
+        <p className='flex justify-center items-center min-h-screen'>Adding Item...</p>
+      }
     </div>
   )
 }

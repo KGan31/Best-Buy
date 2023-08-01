@@ -9,10 +9,12 @@ export default function ItemDetails() {
     const {id} = useParams();
     const [item, setItem] = useState('');
     const {user} = useAuthContext();
+    const [isLoading, setIsLoading] = useState(null);
     const navigate = useNavigate();
     useEffect(()=>{
         const fetchItem = async () => {
             try{
+                setIsLoading(true);
                 const response = await fetch(`/api/shop/${id}` , {
                     headers: {
                         'Content-Type': 'application/json',
@@ -25,6 +27,7 @@ export default function ItemDetails() {
                 // }
                 console.log(data)
                 setItem(data)
+                setIsLoading(false);
             }
             catch(error){
                 console.error('Error finding Item: ', error)
@@ -45,7 +48,7 @@ export default function ItemDetails() {
                 const msg = await response.json()
                 console.log(msg);
                 if(response.ok){
-                    navigate('/');
+                    navigate('/cart');
                 }
             }
             catch(error){
@@ -57,6 +60,10 @@ export default function ItemDetails() {
     const path = "../" + item.image
   return ( 
     <div>
+        {isLoading && 
+                <p className='flex justify-center items-center min-h-screen'>Loading...</p>
+        }
+        {!isLoading && item &&
         <div className="container mx-auto py-8">
             <div className="max-w-md mx-auto bg-white rounded-lg shadow-md overflow-hidden">
             <div className="relative">
@@ -74,7 +81,7 @@ export default function ItemDetails() {
                 </button>
             </div>
             </div>
-        </div>
+        </div>}
     </div>
   )
 }

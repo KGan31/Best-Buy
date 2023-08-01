@@ -39,10 +39,10 @@ return(
             {!user && (
               <div>
                 {/* Login and Logout Buttons */}
-                <Link to = "/login" className="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow">
+                <Link to = "/login" className="bg-white hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded shadow mx-1">
                   Login
                 </Link>
-                <Link to = "/signup" className="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow">
+                <Link to = "/signup" className="bg-white hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded shadow mx-1">
                   Signup
                 </Link>
               </div>

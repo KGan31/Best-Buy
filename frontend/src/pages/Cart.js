@@ -8,10 +8,11 @@ import useAuthContext from '../hooks/useAuthContext'
 const Home = () => {
     const [ items, setItems ] = useState('')
     const {user} = useAuthContext();
-
+    const [isLoading, setIsLoading] = useState(null);
     useEffect(()=>{
         const fetchItems = async () => {
             try {
+                setIsLoading(true);
                 const response = await fetch('/api/cart', {
                     headers: {
                         'Authorization': `Bearer ${user.token}`
@@ -22,7 +23,10 @@ const Home = () => {
                 // if(response.ok){
                 //     dispatch({type: 'SET_ITEMS', payload: data})
                 // }
-                setItems(data)
+                if(data.length){
+                    setItems(data)
+                }
+                setIsLoading(false);
             }
             catch(error){
                 console.error('Error finding items: ', error);
@@ -57,6 +61,10 @@ const Home = () => {
     }
     return(
         <div className="">
+            {isLoading && 
+                <p className='flex justify-center items-center min-h-screen'>Loading...</p>
+            }
+            {!isLoading && items &&
             <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4 pl-6 pt-6'>
                 {items && items.map((item) => (
                     <div key = {item._id} className='bg-white shadow-md rounded-lg overflow-hidden hover:shadow-lg'>
@@ -71,7 +79,11 @@ const Home = () => {
                     </Link>
                     </div>
                 ))}
-            </div>
+            </div>}
+            {!isLoading && !items && 
+            <div>
+                No items in Cart
+            </div>}
         </div>
     )
 }
