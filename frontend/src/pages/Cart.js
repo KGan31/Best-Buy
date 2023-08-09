@@ -8,28 +8,29 @@ import useAuthContext from '../hooks/useAuthContext'
 const Home = () => {
     const [ items, setItems ] = useState('')
     const {user} = useAuthContext();
-    const [isLoading, setIsLoading] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState(null);
     useEffect(()=>{
         const fetchItems = async () => {
             try {
                 setIsLoading(true);
+                setError(null);
                 const response = await fetch('/api/cart', {
                     headers: {
                         'Authorization': `Bearer ${user.token}`
                     }
                 });
                 const data = await response.json();
-                console.log(data)
-                // if(response.ok){
-                //     dispatch({type: 'SET_ITEMS', payload: data})
-                // }
-                if(data.length){
-                    setItems(data)
+                if(!response.ok){
+                    setError(data.error);
+                }
+                else{
+                    setItems(data);
                 }
                 setIsLoading(false);
             }
             catch(error){
-                console.error('Error finding items: ', error);
+                // console.error('Error finding items: ', error);
             }
         }
         if(user){
@@ -40,6 +41,8 @@ const Home = () => {
         console.log(id)
         const fetchItems = async () => {
             try {
+                setIsLoading(true);
+                setError(null);
                 const response = await fetch('/api/cart/' + id, {
                     method: 'DELETE',
                     headers: {
@@ -47,11 +50,17 @@ const Home = () => {
                     }
                 });
                 const data = await response.json();
-                console.log(data)
+                // console.log(data)
                 // if(response.ok){
                 //     dispatch({type: 'SET_ITEMS', payload: data})
                 // }
-                setItems(data)
+                if(!response.ok){
+                    setError(data.error);
+                }
+                else{
+                    setItems(data);
+                }
+                setIsLoading(false);
             }
             catch(error){
                 console.error('Error finding items: ', error);
@@ -80,10 +89,9 @@ const Home = () => {
                     </div>
                 ))}
             </div>}
-            {!isLoading && !items && 
-            <div>
-                No items in Cart
-            </div>}
+            {error &&
+                <p>{error}</p>
+            }
         </div>
     )
 }

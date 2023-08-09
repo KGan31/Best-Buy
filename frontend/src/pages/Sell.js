@@ -11,7 +11,7 @@ function Sell() {
   const [price, setPrice] = useState('');
   const [img, setImg] = useState('');
   const {user} = useAuthContext();
-  const [isLoading, setIsLoading] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);

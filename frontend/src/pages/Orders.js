@@ -8,7 +8,7 @@ import useAuthContext from '../hooks/useAuthContext'
 const Home = () => {
     const [ items, setItems ] = useState('')
     const {user} = useAuthContext();
-    const [isLoading, setIsLoading] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
     useEffect(()=>{
         const fetchItems = async () => {
             try {

@@ -6,6 +6,10 @@ const mongoose = require('mongoose')
 const getItems = async(req, res) => {
     const user_id = req.user._id;
     const allItems = await Cart.find({user_id}).sort({createdAt: -1});
+
+    if(allItems.length==0){
+        return res.status(401).json({error: "No items in cart"})
+    }
     const ids = [];
     var i;
     allItems.map((item)=> (
@@ -15,6 +19,9 @@ const getItems = async(req, res) => {
     console.log(allItems);
     //console.log(req);
     const cartItems = await Item.find({_id: {$in: ids}})
+    if(JSON.stringify(cartItems)==={}){
+        return res.status(401).json({error: "No items in cart"})
+    }
     res.status(200).json(cartItems);
 }
 
@@ -23,10 +30,13 @@ const createItem = async(req, res) => {
     const {id: item_id} = req.params;
     const alreadyInCart = await Cart.findOne({user_id, item_id})
     console.log(alreadyInCart)
-    if(alreadyInCart){
-        return res.status(200).json({message: "Item is already added to cart"});
+    if(alreadyInCart!=null){
+        return res.status(401).json({error:"Item already in Cart"})
     }
     const cartItem = await Cart.create({user_id, item_id});
+    if(JSON.stringify(cartItem)==={}){
+        return res.status(404).json({error:"Failed to add Item to cart"});
+    }
     return res.status(200).json(cartItem);
 }
 
@@ -37,9 +47,10 @@ const deleteItem = async(req, res) => {
         return res.status(404).json({error: "No such Item"})
     }
     const cartItem = await Cart.findOneAndDelete({user_id, item_id}) 
-    if(!cartItem){
-        return res.status(400).json({error: "No such Item"})
+    if(JSON.stringify(cartItem)==={}){
+        return res.status(404).json({error: "Failed to delete item"})
     }
+    console.log(cartItem);
     return res.status(200).json(cartItem);
 }
 
@@ -48,19 +59,20 @@ const checkoutItems = async(req, res) => {
     const buyer_user_id = req.user._id;
     del_ids.forEach(async (id)=>{
         if(!mongoose.Types.ObjectId.isValid(id)){
-            return res.status(404).json({error: "No such Item"})
+            throw Error("Failed to delete Item")
+            // return res.status(404).json({error: "No such Item"})
         }
         const cartItem = await Cart.deleteMany({item_id: id}) 
-        if(!cartItem){
-            return res.status(400).json({error: "No such Item"})
-        }
+        // if(cartItem.length==0){
+        //     return res.status(400).json({error: "Failed to delete Item"})
+        // }
         const item = await Item.findOneAndDelete({_id: id})
-        if(!item){
+        if(JSON.stringify(item)==={}){
             return res.status(400).json({error: "Failed to delete Item"})
         }
         const {title, description, price, image, user_id: seller_user_id} = item;
         const sold_item = await Sold_Item.create({title, description, price, image, seller_user_id, buyer_user_id})
-        if(!sold_item){
+        if(JSON.stringify(sold_item)==={}){
             return res.status(400).json({error: "Failed to delete Item"})
         }
     })

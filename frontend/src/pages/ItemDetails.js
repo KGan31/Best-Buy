@@ -9,12 +9,14 @@ export default function ItemDetails() {
     const {id} = useParams();
     const [item, setItem] = useState('');
     const {user} = useAuthContext();
-    const [isLoading, setIsLoading] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState(null);
     const navigate = useNavigate();
     useEffect(()=>{
         const fetchItem = async () => {
             try{
                 setIsLoading(true);
+                setError(null);
                 const response = await fetch(`/api/shop/${id}` , {
                     headers: {
                         'Content-Type': 'application/json',
@@ -25,8 +27,12 @@ export default function ItemDetails() {
                 // if(response.ok){
                 //     dispatch({type: 'GET_ITEM', payload: data})
                 // }
-                console.log(data)
-                setItem(data)
+                if(!response.ok){
+                    setError(data.error);
+                }
+                else{
+                    setItem(data)
+                }
                 setIsLoading(false);
             }
             catch(error){
@@ -38,6 +44,8 @@ export default function ItemDetails() {
     const handleClick = () => {
         const addToCart = async () => {
             try {
+                setIsLoading(true);
+                setError(null);
                 const response = await fetch(`/api/cart/${id}`, {
                     method: 'POST', 
                     headers: {
@@ -46,13 +54,19 @@ export default function ItemDetails() {
                     }
                 })
                 const msg = await response.json()
-                console.log(msg);
-                if(response.ok){
-                    navigate('/cart');
+                if(!response.ok){
+                    setError(msg.error);
                 }
+                // else{
+                //     setItem(msg);
+                // }
+                // console.log(msg);
+                setIsLoading(false);
             }
             catch(error){
                 console.error('Error Deleting Items')
+                
+                setIsLoading(false);
             }
         } 
         addToCart();
@@ -82,6 +96,9 @@ export default function ItemDetails() {
             </div>
             </div>
         </div>}
+        {error &&
+        <p>{error}</p>
+        }
     </div>
   )
 }

@@ -9,7 +9,7 @@ export default function SoldItemDetails() {
     const {id} = useParams();
     const [item, setItem] = useState('');
     const {user} = useAuthContext();
-    const [isLoading, setIsLoading] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
     const navigate = useNavigate();
     useEffect(()=>{
         const fetchItem = async () => {

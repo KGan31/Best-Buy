@@ -10,7 +10,7 @@ const Home = () => {
     const [ itemsSold, setItemsSold ] = useState('')
 
     const {user} = useAuthContext();
-    const [isLoading, setIsLoading] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
     useEffect(()=>{
         const fetchItemsForSale = async () => {
             try {

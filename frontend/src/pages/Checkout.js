@@ -7,12 +7,14 @@ const Checkout = () => {
     const [ items, setItems ] = useState('')
     const {user} = useAuthContext();
     const [totalAmount, setTotalAmount] = useState(null);
-    const [isLoading, setIsLoading] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState(null);
     const navigate = useNavigate();
     useEffect(()=>{
         const fetchItems = async () => {
             try {
                 setIsLoading(true);
+                setError(null);
                 const response = await fetch('/api/cart', {
                     headers: {
                         'Authorization': `Bearer ${user.token}`
@@ -23,10 +25,13 @@ const Checkout = () => {
                 // if(response.ok){
                 //     dispatch({type: 'SET_ITEMS', payload: data})
                 // }
-                if(data.length){
+                if(!response.ok){
+                  setError(data.error);
+                }
+                else{
                   setTotalAmount(data.reduce((total, item)=>total+item.price, 0));
-                  setItems(data);
-                }  
+                  setItems(data); 
+                }          
                 setIsLoading(false);
             }
             catch(error){
@@ -42,6 +47,8 @@ const Checkout = () => {
       const del_ids = items.map(item => item._id)
       const deleteItem = async () => {
         try {
+            setIsLoading(true);
+            setError(null);
             const response = await fetch(`/api/cart`, {
                 method: 'DELETE', 
                 headers: {
@@ -50,12 +57,17 @@ const Checkout = () => {
                 },
                 body: JSON.stringify(del_ids)
             })
+            const data = await response.json();
             if(response.ok){
-                navigate('/');
+              navigate('/');
             }
+            else{
+              setError(data.error);
+            }
+            setIsLoading(false);
         }
         catch(error){
-            console.error('Error Deleting Items')
+            console.error('Error Deleting Items')       
         }
       } 
       deleteItem();
@@ -78,10 +90,9 @@ const Checkout = () => {
       {isLoading && 
           <p className='flex justify-center items-center min-h-screen'>Loading...</p>
       }
-      {!isLoading && !items && 
-      <div>
-        <h2>No items in Cart</h2>
-      </div>}
+      {error && 
+        <p>{error}</p>
+      }
       {items &&
       <div>
         <h2 className="text-xl font-medium mb-4">Items</h2>
