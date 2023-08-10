@@ -4,6 +4,7 @@ import {useEffect, useState} from 'react'
 //components
 import ItemList from '../components/ItemList'
 import useAuthContext from '../hooks/useAuthContext'
+import { BASE_URL } from '../components/helper'
 
 const Home = () => {
     const [ items, setItems ] = useState('')
@@ -15,7 +16,7 @@ const Home = () => {
             try {
                 setIsLoading(true);
                 setError(null);
-                const response = await fetch('/api/shop/orders', {
+                const response = await fetch(`${BASE_URL}/api/shop/orders`, {
                     headers: {
                         'Authorization': `Bearer ${user.token}`
                     }

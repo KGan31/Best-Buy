@@ -1,6 +1,6 @@
 import {useEffect, useState} from 'react'
 //import { useItemsContext } from '../hooks/useItemsContext';
-
+import { BASE_URL } from '../components/helper'
 //components
 import ItemList from '../components/ItemList'
 import useAuthContext from '../hooks/useAuthContext'
@@ -15,7 +15,7 @@ const Home = () => {
         const fetchItemsForSale = async () => {
             try {
                 setIsLoading(true);
-                const response = await fetch('/api/shop/sales', {
+                const response = await fetch(`${BASE_URL}/api/shop/sales`, {
                     headers: {
                         'Authorization': `Bearer ${user.token}`
                     }
@@ -37,7 +37,7 @@ const Home = () => {
         const fetchItemsSold = async () => {
             try {
                 setIsLoading(true);
-                const response = await fetch('/api/shop/sold', {
+                const response = await fetch(`${BASE_URL}/api/shop/sold`, {
                     headers: {
                         'Authorization': `Bearer ${user.token}`
                     }

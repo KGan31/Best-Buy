@@ -1,9 +1,10 @@
 import React from 'react'
 import { useEffect, useState } from 'react';
 
-import { useParams , useNavigate} from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import useAuthContext from '../hooks/useAuthContext';
 //import { useItemsContext } from '../hooks/useItemsContext';
+import { BASE_URL } from '../components/helper';
 
 export default function ItemDetails() {
     const {id} = useParams();
@@ -11,13 +12,13 @@ export default function ItemDetails() {
     const {user} = useAuthContext();
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
-    const navigate = useNavigate();
+
     useEffect(()=>{
         const fetchItem = async () => {
             try{
                 setIsLoading(true);
                 setError(null);
-                const response = await fetch(`/api/shop/${id}` , {
+                const response = await fetch(`${BASE_URL}/api/shop/${id}` , {
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${user.token}`
@@ -46,7 +47,7 @@ export default function ItemDetails() {
             try {
                 setIsLoading(true);
                 setError(null);
-                const response = await fetch(`/api/cart/${id}`, {
+                const response = await fetch(`${BASE_URL}/api/cart/${id}`, {
                     method: 'POST', 
                     headers: {
                         'Content-Type': 'application/json',
@@ -71,7 +72,6 @@ export default function ItemDetails() {
         } 
         addToCart();
     }
-    const path = "../" + item.image
   return ( 
     <div>
         {isLoading && 
@@ -81,7 +81,7 @@ export default function ItemDetails() {
         <div className="container mx-auto py-8">
             <div className="max-w-md mx-auto bg-white rounded-lg shadow-md overflow-hidden">
             <div className="relative">
-                {item.image && <img src={path}  alt="Product" className="w-full h-64 object-cover" />}
+                {item.image && <img src={BASE_URL+ "/" + item.image}  alt="Product" className="w-full h-64 object-cover" />}
             </div>
             <div className="px-6 py-4">
                 <h1 className="text-2xl font-bold mb-2">{item.title}</h1>

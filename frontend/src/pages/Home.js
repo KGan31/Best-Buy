@@ -1,6 +1,6 @@
 import {useEffect, useState} from 'react'
 //import { useItemsContext } from '../hooks/useItemsContext';
-import { useNavigate } from 'react-router-dom'
+import { BASE_URL } from '../components/helper'
 
 //components
 import ItemList from '../components/ItemList'
@@ -16,7 +16,7 @@ const Home = () => {
             try {
                 setIsLoading(true);
                 setError(null);
-                const response = await fetch('/api/shop', {
+                const response = await fetch(`${BASE_URL}/api/shop`, {
                     headers: {
                         'Authorization': `Bearer ${user.token}`
                     }

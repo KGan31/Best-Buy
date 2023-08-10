@@ -2,6 +2,7 @@ import React from 'react';
 import { useEffect, useState } from 'react';
 import useAuthContext from '../hooks/useAuthContext';
 import { useNavigate } from 'react-router-dom';
+import { BASE_URL } from '../components/helper';
 
 const Checkout = () => {
     const [ items, setItems ] = useState('')
@@ -15,7 +16,7 @@ const Checkout = () => {
             try {
                 setIsLoading(true);
                 setError(null);
-                const response = await fetch('/api/cart', {
+                const response = await fetch(`${BASE_URL}/api/cart`, {
                     headers: {
                         'Authorization': `Bearer ${user.token}`
                     }
@@ -49,7 +50,7 @@ const Checkout = () => {
         try {
             setIsLoading(true);
             setError(null);
-            const response = await fetch(`/api/cart`, {
+            const response = await fetch(`${BASE_URL}/api/cart`, {
                 method: 'DELETE', 
                 headers: {
                     'Content-Type': 'application/json',

@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useParams , useNavigate} from 'react-router-dom'
 import useAuthContext from '../hooks/useAuthContext';
 //import { useItemsContext } from '../hooks/useItemsContext';
+import { BASE_URL } from '../components/helper';
 
 export default function SoldItemDetails() {
     const {id} = useParams();
@@ -15,7 +16,7 @@ export default function SoldItemDetails() {
         const fetchItem = async () => {
             try{
                 setIsLoading(true);
-                const response = await fetch(`/api/shop/sold/${id}` , {
+                const response = await fetch(`${BASE_URL}/api/shop/sold/${id}` , {
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${user.token}`
@@ -35,7 +36,6 @@ export default function SoldItemDetails() {
         }
         fetchItem();
     }, []);
-    const path = "../../" + item.image
   return ( 
     <div>
         {isLoading && 
@@ -45,7 +45,7 @@ export default function SoldItemDetails() {
             <div className="container mx-auto py-8">
                 <div className="max-w-md mx-auto bg-white rounded-lg shadow-md overflow-hidden">
                     <div className="relative">
-                        {item.image && <img src={path}  alt="Product" className="w-full h-64 object-cover" />}
+                        {item.image && <img src={BASE_URL+ "/" + item.image}  alt="Product" className="w-full h-64 object-cover" />}
                     </div>
                     <div className="px-6 py-4">
                         <h1 className="text-2xl font-bold mb-2">{item.title}</h1>

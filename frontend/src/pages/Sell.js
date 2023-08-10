@@ -2,7 +2,7 @@ import React from 'react'
 import { useState } from 'react';
 import useAuthContext from '../hooks/useAuthContext';
 //import { useItemsContext } from '../hooks/useItemsContext';
-
+import { BASE_URL } from '../components/helper';
 function Sell() {
   //const {dispatch} = useItemsContext()
 
@@ -25,7 +25,7 @@ function Sell() {
     formdata.append('image', img);
 
     console.log(item, img)
-    const response = await fetch('/api/shop', {
+    const response = await fetch(`${BASE_URL}/api/shop`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${user.token}`

@@ -1,7 +1,7 @@
 import {useEffect, useState} from 'react'
 import { Link } from 'react-router-dom'
 //import { useItemsContext } from '../hooks/useItemsContext';
-
+import { BASE_URL } from '../components/helper'
 //components
 import useAuthContext from '../hooks/useAuthContext'
 
@@ -15,7 +15,7 @@ const Home = () => {
             try {
                 setIsLoading(true);
                 setError(null);
-                const response = await fetch('/api/cart', {
+                const response = await fetch(`${BASE_URL}/api/cart`, {
                     headers: {
                         'Authorization': `Bearer ${user.token}`
                     }
@@ -43,7 +43,7 @@ const Home = () => {
             try {
                 setIsLoading(true);
                 setError(null);
-                const response = await fetch('/api/cart/' + id, {
+                const response = await fetch(`${BASE_URL}/api/cart/` + id, {
                     method: 'DELETE',
                     headers: {
                         'Authorization': `Bearer ${user.token}`
@@ -78,7 +78,7 @@ const Home = () => {
                 {items && items.map((item) => (
                     <div key = {item._id} className='bg-white shadow-md rounded-lg overflow-hidden hover:shadow-lg'>
                     <Link to = {`/items/${item._id}`}>
-                        <img src={item.image} alt="" className='h-32 sm:h-[15em] w-full object-cover'/>
+                        <img src={BASE_URL+ "/" +item.image} alt="" className='h-32 sm:h-[15em] w-full object-cover'/>
                         <div className="p-4">
                             <h3 className="text-lg font-semibold mb-2">{item.title}</h3>
                             <p className="text-gray-700 mb-4">{item.description}</p>
