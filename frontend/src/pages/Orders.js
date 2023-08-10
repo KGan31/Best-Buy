@@ -9,10 +9,12 @@ const Home = () => {
     const [ items, setItems ] = useState('')
     const {user} = useAuthContext();
     const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState(null);
     useEffect(()=>{
         const fetchItems = async () => {
             try {
                 setIsLoading(true);
+                setError(null);
                 const response = await fetch('/api/shop/orders', {
                     headers: {
                         'Authorization': `Bearer ${user.token}`
@@ -23,7 +25,10 @@ const Home = () => {
                 // if(response.ok){
                 //     dispatch({type: 'SET_ITEMS', payload: data})
                 // }
-                if(data.length){
+                if(!response.ok){
+                    setError(data.error);
+                }
+                else{
                     setItems(data);
                 }
                 setIsLoading(false);
@@ -42,8 +47,8 @@ const Home = () => {
             {isLoading && 
                 <p className='flex justify-center items-center min-h-screen'>Loading...</p>
             }
-            {!isLoading && !items &&
-                <p>You have not made any purchases</p>
+            {error &&
+                <p>{error}</p>
             }
             {!isLoading && items &&
                 <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4 pl-6 pt-6'>

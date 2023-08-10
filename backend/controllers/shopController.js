@@ -6,7 +6,10 @@ const mongoose = require('mongoose')
 // Get All Ttems
 const getItems = async(req, res) => {
     const allItems = await Item.find({}).sort({createdAt: -1})
-    res.status(200).json(allItems)
+    if(allItems.length==0){
+        return res.status(400).json({error:"Seems like we are currently out of stock. Please check again later"})
+    }
+    return res.status(200).json(allItems)
 }
 
 // Get Single Item
@@ -16,10 +19,10 @@ const getItem = async(req, res) => {
         return res.status(404).json({error: "No such Item getItem"})
     }
     const singleItem = await Item.findById(id);
-    if(!singleItem){
+    if(singleItem==null){
         return res.status(404).json({error: "No such Item getItem"})
     } 
-    res.status(200).json(singleItem)
+    return res.status(200).json(singleItem)
 }
 
 // Create Item
@@ -47,9 +50,12 @@ const createItem = async(req, res) => {
         console.log(req.user);
         const item = await Item.create({title, description, price, image, user_id})
         console.log(item)
-        res.status(200).json(item)
+        if(item==null){
+            return res.status(400).json({error: "Failed to add Item"})
+        }
+        return res.status(200).json(item)
     } catch(error){
-        res.status(400).json({error: error.message})
+        return res.status(400).json({error: error.message})
     }
 }
 
@@ -61,10 +67,10 @@ const deleteItem = async(req, res) => {
     }
     const item = await Item.findOneAndDelete({_id: id}) 
     const cartItems = await Cart.deleteMany({item_id: id})
-    if(!item){
+    if(item==null){
         return res.status(400).json({error: "Item Is Sold"})
     }
-    res.status(200).json(item);
+    return res.status(200).json(item);
 }
 
 // Update Item
@@ -79,7 +85,7 @@ const updateItem = async(req, res) => {
     if(!item){
         return res.status(400).json({error: "No such Item"})
     }
-    res.status(200).json(item)
+    return res.status(200).json(item)
 }
 
 // get items that user posted
@@ -89,10 +95,10 @@ const sales = async(req, res) => {
         return res.status(404).json({error: "No such User"})
     }
     const sales = await Item.find({user_id}).sort({createdAt: -1})
-    if(!sales){
-        return res.status(400).json({error: "No items are listed by the user"})
+    if(sales.length==0){
+        return res.status(400).json({error: "No items are listed by you"})
     }
-    res.status(200).json(sales)
+    return res.status(200).json(sales)
 }
 const sold = async(req, res) => {
     const seller_user_id = req.user._id;
@@ -100,8 +106,8 @@ const sold = async(req, res) => {
         return res.status(404).json({error: "No such User"})
     }
     const sold = await Sold_Item.find({seller_user_id}).sort({createdAt: -1})
-    if(!sold){
-        return res.status(400).json({error: "No items are listed by the user"})
+    if(sold.length==0){
+        return res.status(400).json({error: "No items are listed by you"})
     }
     return res.status(200).json(sold)
 }
@@ -113,10 +119,11 @@ const orders = async(req, res) => {
         return res.status(404).json({error: "No such User"})
     }
     const sales = await Sold_Item.find({buyer_user_id}).sort({createdAt: -1})
-    if(!sales){
-        return res.status(400).json({error: "No items are listed by the user"})
+    console.log(sales)
+    if(sales.length==0){
+        return res.status(400).json({error: "No items bought"})
     }
-    res.status(200).json(sales)
+    return res.status(200).json(sales)
 }
 
 const getSoldItem = async(req, res) => {
@@ -125,10 +132,10 @@ const getSoldItem = async(req, res) => {
         return res.status(404).json({error: "No such Item getItem"})
     }
     const singleItem = await Sold_Item.findById(id);
-    if(!singleItem){
+    if(singleItem==null){
         return res.status(404).json({error: "No such Item getItem"})
     } 
-    res.status(200).json(singleItem)
+    return res.status(200).json(singleItem)
 }
 
 module.exports = {

@@ -11,10 +11,12 @@ function Sell() {
   const [price, setPrice] = useState('');
   const [img, setImg] = useState('');
   const {user} = useAuthContext();
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
+    setError(null);
     const item = {name, desc, price};
     const formdata = new FormData();
     formdata.append('title', name);
@@ -37,8 +39,10 @@ function Sell() {
         setPrice('')
         setImg('')
         console.log('New Item added', json)
-
         //dispatch({type: 'CREATE_ITEM', payload: json})
+    }
+    else{
+      setError(json.error);
     }
     setIsLoading(false);
   }
@@ -88,6 +92,9 @@ function Sell() {
       </form>
       {isLoading && 
         <p className='flex justify-center items-center min-h-screen'>Adding Item...</p>
+      }
+      {error &&
+        <p>{error}</p>
       }
     </div>
   )

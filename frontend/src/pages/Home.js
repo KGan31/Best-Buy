@@ -10,24 +10,29 @@ const Home = () => {
     const [ items, setItems ] = useState('')
     const {user} = useAuthContext();
     const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState(null);
     useEffect(()=>{
         const fetchItems = async () => {
             try {
                 setIsLoading(true);
+                setError(null);
                 const response = await fetch('/api/shop', {
                     headers: {
                         'Authorization': `Bearer ${user.token}`
                     }
                 });
+                const data = await response.json();
                 if(response.ok){
-                    const data = await response.json();
                     console.log(data)
                     // if(response.ok){
                     //     dispatch({type: 'SET_ITEMS', payload: data})
                     // }
                     setItems(data);
-                    setIsLoading(false);
                 }
+                else{
+                    setError(data.error)
+                }
+                setIsLoading(false);
             }
             catch(error){
                 console.error('Error finding items: ', error);
@@ -40,6 +45,9 @@ const Home = () => {
     
     return(
         <div className="">
+            {error && 
+                <p>{error}</p>
+            }
             {isLoading && 
                 <p className='flex justify-center items-center min-h-screen'>Loading...</p>
             }
