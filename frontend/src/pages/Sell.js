@@ -2,10 +2,9 @@ import React from 'react'
 import { useState } from 'react';
 import useAuthContext from '../hooks/useAuthContext';
 //import { useItemsContext } from '../hooks/useItemsContext';
-import { BASE_URL } from '../components/helper';
+import {BASE_URL} from '../components/helper';
 function Sell() {
   //const {dispatch} = useItemsContext()
-
   const [name, setName] = useState('');
   const [desc, setDesc] = useState('');
   const [price, setPrice] = useState('');
@@ -13,37 +12,57 @@ function Sell() {
   const {user} = useAuthContext();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
     setError(null);
-    const item = {name, desc, price};
-    const formdata = new FormData();
-    formdata.append('title', name);
-    formdata.append('description', desc);
-    formdata.append('price', price);
-    formdata.append('image', img);
-
-    console.log(item, img)
-    const response = await fetch(`${BASE_URL}/api/shop`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${user.token}`
-        },
-        body: formdata,
+    const cloudinary_formdata = new FormData();
+    cloudinary_formdata.append('file', img);
+    cloudinary_formdata.append('upload_preset', 'best-buy'); 
+    const cloudinary_response = await fetch(`https://api.cloudinary.com/v1_1/dyyx9zotu/image/upload`, {
+      method: 'POST',
+      body: cloudinary_formdata
     })
-    const json = await response.json()
-    if(response.ok) {
-        setName('')
-        setDesc('')
-        setPrice('')
-        setImg('')
-        console.log('New Item added', json)
-        //dispatch({type: 'CREATE_ITEM', payload: json})
+    const cloudinary_json = await cloudinary_response.json();
+    // console.log(cloudinary_json.secure_url);
+    if(cloudinary_response.ok){
+      console.log(cloudinary_json);
+      const item = {
+        'title' : name,
+        'description': desc,
+        'price' : price,
+        'image' : {
+          'public_id': cloudinary_json.public_id,
+          'url': cloudinary_json.secure_url
+        }
+      }
+      console.log(item)
+      const response = await fetch(`${BASE_URL}/api/shop`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${user.token}`
+          },
+          body: JSON.stringify(item),
+      })
+      const json = await response.json()
+      if(response.ok) {
+          setName('')
+          setDesc('')
+          setPrice('')
+          setImg('')
+          console.log('New Item added', json)
+          //dispatch({type: 'CREATE_ITEM', payload: json})
+      }
+      else{
+        setError(json.error);
+      }
     }
     else{
-      setError(json.error);
+      setError(cloudinary_json.error);
     }
+    
     setIsLoading(false);
   }
 

@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router();
-const { upload } = require('../middleware/upload')
+// const { upload } = require('../middleware/upload')
 const {
     getItem,
     getItems,
@@ -33,7 +33,7 @@ router.get('/', getItems);
 router.get('/:id', getItem);
 
 // POST Item
-router.post('/',  upload.single("image"),  createItem);
+router.post('/', createItem);
 
 // Delete Item
 router.delete('/:id', deleteItem);

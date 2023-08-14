@@ -45,7 +45,7 @@ export default function SoldItemDetails() {
             <div className="container mx-auto py-8">
                 <div className="max-w-md mx-auto bg-white rounded-lg shadow-md overflow-hidden">
                     <div className="relative">
-                        {item.image && <img src={BASE_URL+ "/" + item.image}  alt="Product" className="w-full h-64 object-cover" />}
+                        {item.image && <img src={item.image.url}  alt="Product" className="w-full h-64 object-cover" />}
                     </div>
                     <div className="px-6 py-4">
                         <h1 className="text-2xl font-bold mb-2">{item.title}</h1>

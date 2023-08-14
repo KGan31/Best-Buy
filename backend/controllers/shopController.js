@@ -2,6 +2,7 @@ const Item = require('../models/itemModel')
 const Sold_Item = require('../models/soldItemModel')
 const Cart = require('../models/cartModel')
 const mongoose = require('mongoose')
+const cloudinary = require('../utils/cloudinary');
 
 // Get All Ttems
 const getItems = async(req, res) => {
@@ -27,8 +28,8 @@ const getItem = async(req, res) => {
 
 // Create Item
 const createItem = async(req, res) => {
-    const {title, description, price} = req.body
-    const image = req.file.path;
+    const {title, description, price, image} = req.body
+    // const image = req.file.path;
     var emptyFields = []
     if(!title){
         emptyFields.push('title')
@@ -67,6 +68,14 @@ const deleteItem = async(req, res) => {
     }
     const item = await Item.findOneAndDelete({_id: id}) 
     const cartItems = await Cart.deleteMany({item_id: id})
+    const imgId = item.image.public_id;
+    if(item && imgId){
+        await cloudinary.uploader.destroy(imgId, (error,result)=>{
+            if(error){
+                return res.status(400).json(error);
+            }
+        });
+    }
     if(item==null){
         return res.status(400).json({error: "Item Is Sold"})
     }
