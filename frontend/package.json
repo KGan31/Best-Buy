@@ -1,5 +1,5 @@
 {
-    "proxy":"https://localhost:8000",
+    "proxy":"https://best-buy-backend.onrender.com",
     "name":"frontend","version":"0.1.0",
     "private":true,
     "dependencies":{
